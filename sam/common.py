@@ -25,7 +25,7 @@ class Patches(nn.Module):
     def forward(self, x):
     
         x = self.proj(x)
-        B,_,_,_ = x.shape
+        B,_,_,_ = x.shape 
 
         x = x.permute(0, 2, 3, 1).contigous().view(B, -1, self.embed_dim) # B,embed_dim,H,W -> permute B,H,W,embed_dim -> B, H*W, embed_dim
 
