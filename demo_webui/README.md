@@ -1,6 +1,7 @@
 # Segment Anything Model webui (Streamlit)
+*Knowledge provided by* [AI VIET NAM](https://aivietnam.edu.vn/) 
 
-<div align = "center"><img src = "./images/final.gif"></div>
+<div align = "center"><img src="./images/logo.png"></div>
 
 ____________________
 ## Install Streamlit
@@ -24,7 +25,10 @@ wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth -O che
 __________________________
 ## Run script
 ```
+cd demo_webui
 streamlit run ./pages/segment-anything.py
 ```
 __________________________
 # NOTE
+
+<img src = "./images/seg (2).png">
