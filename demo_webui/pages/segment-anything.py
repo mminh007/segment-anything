@@ -34,11 +34,11 @@ def click(container_width, ground, height, scale, radius_width, show_mask, model
 
         if len(df) == 0:
             st.session_state.clear()
-        if "canvas_result" not in st.session_state:
-            st.session_state["canvas_result"] = len(df)
+            if "canvas_result" not in st.session_state:
+                st.session_state["canvas_result"] = len(df)
             
-        elif len(df) != st.session_state["canvas_result"]:
-            st.session_state["canvas_result"] = len(df)
+            elif len(df) != st.session_state["canvas_result"]:
+                st.session_state["canvas_result"] = len(df)
 
         df["center_x"] = df["left"]
         df["center_y"] = df["top"]
@@ -47,7 +47,7 @@ def click(container_width, ground, height, scale, radius_width, show_mask, model
         input_labels = []
 
         for _, row in df.iterrows():
-            x, y = row["center_x"], row["center_y"]
+            x, y = row["center_x"] + 5, row["center_y"]
             x = int(x/scale)
             y = int(y/scale)
             input_points.append([x,y])
@@ -125,14 +125,7 @@ def box(container_width,height,scale,radius_width,show_mask,model,im):
             center_label.append([1])
             input_box.append([x,y,x+w,y+h])
         
-        # if 'color_change_point_box' in st.session_state:
-        #     p = st.session_state['color_change_point_box']
-        #     if len(df) < p:
-        #         p = len(df) - 1
-        #         st.session_state['color_change_point_box'] = p
-        #     masks = model_predict_box(im,center_point[p:],center_label[p:],input_box[p:],model)
-        # else:
-        #     masks = model_predict_box(im,center_point,center_label,input_box,model)
+
         masks = model_predict_box(im,center_point,center_label,input_box,model)
         masks = np.array(masks)
         
