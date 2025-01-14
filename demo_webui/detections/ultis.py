@@ -1,9 +1,10 @@
 from segment_anything import SamPredictor, SamAutomaticMaskGenerator, sam_model_registry
+from transformers import SamModel, SamProcessor
+from diffusers import StableDiffusionInpaintPipeline
 import torch
 import numpy as np
 import streamlit as st
 import cv2
-
 
 def get_checkpoint_path(model):
     if model == 'vit_l':
@@ -25,6 +26,27 @@ def get_model(model):
     return predictor, mask_generator
 
 
+@st.cache_resource
+def sam_model():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = SamModel.from_pretrained("facebook/sam-vit-huge")
+    processor = SamProcessor.from_pretrained("facebook/sam-vit-huge")
+
+    torch.cuda.empty_cache()
+    return model, processor
+
+
+@st.cache_resource
+def inpaint_model():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    pipe = StableDiffusionInpaintPipeline.from_pretrained(
+        "stabilityai/stable-diffusion-2-inpainting",
+        torch_dtype = torch.float16)
+    pipe = pipe.to(device)
+
+    return pipe
+
+
 @st.cache_data
 def show_everything(sorted_anns):
     if len(sorted_anns) == 0:
@@ -42,6 +64,19 @@ def show_everything(sorted_anns):
     mask = mask * 255
     st.success('Process completed！', icon="✅")
     return mask.astype(np.uint8)
+
+@st.cache_data
+def show_mask(mask, random_color=False):
+    if random_color:
+        color = np.concatenate([np.random.randint(0,255, size=(3)), np.array([0.6])], axis = 0)
+    else:
+        color = np.array([30/255, 144/255, 255/255, 0.6])
+
+    if len(mask.shape) == 4:
+        mask = mask.unsqueeze()
+    h, w = mask.shape[-2:]
+    mask_image = mask.reshape(h,w,1) * color.reshape(1,1,-1)
+    return mask_image
 
 
 @st.cache_data
