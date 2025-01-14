@@ -1,2 +1,13 @@
 
 __pycache__
+*.log
+
+checkpoints/
+
+**./ipynb_checkpoints
+
+# pytorch/python/numpy formats
+*.pth
+*.pkl
+*.npy
+*.ts
